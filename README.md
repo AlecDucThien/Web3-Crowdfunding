@@ -1,1 +1,1 @@
-Decentralized voting system using Ethereum blockchain
+Web3 Crowdfunding
