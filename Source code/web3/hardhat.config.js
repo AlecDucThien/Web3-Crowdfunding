@@ -1,29 +1,30 @@
-require("@matterlabs/hardhat-zksync-solc");
-require("@matterlabs/hardhat-zksync-verify");
-require('dotenv').config();
+//require("@nomicfoundation/hardhat-toolbox");
+//require("@thirdweb-dev/hardhat");
+require("dotenv").config();
 
+const privateKey = process.env.PRIVATE_KEY
+  ? process.env.PRIVATE_KEY.startsWith("0x")
+    ? process.env.PRIVATE_KEY
+    : `0x${process.env.PRIVATE_KEY}`
+  : "";
 
-const privateKey = process.env.PRIVATE_KEY.startsWith('0x')
-  ? process.env.PRIVATE_KEY
-  : `0x${process.env.PRIVATE_KEY}`;
-
-/** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  defaultNetwork: 'sepolia',
+  defaultNetwork: "sepolia",
   networks: {
+    hardhat: {}, // Mạng cục bộ cho test
     sepolia: {
-      url: "https://rpc.sepolia.org",
-      accounts: [privateKey],
+      url: process.env.INFURA_URL || "https://rpc.sepolia.org",
+      accounts: privateKey ? [privateKey] : [],
     },
   },
   paths: {
-    artifacts: "./artifacts-zk",
-    cache: "./cache-zk",
     sources: "./contracts",
     tests: "./test",
+    artifacts: "./artifacts",
+    cache: "./cache",
   },
   solidity: {
-    version: "0.8.23",
+    version: "0.8.20", // Phù hợp với @openzeppelin/contracts 5.x
     settings: {
       optimizer: {
         enabled: true,

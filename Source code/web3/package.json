@@ -3,16 +3,21 @@
   "scripts": {
     "build": "npx thirdweb@latest detect",
     "deploy": "npx thirdweb@latest deploy -k 7_tV0u8o7VZW8qGML9zRzzkNo4vYlEiH3Qc3qFI347WYYtBH_9e7J5aUgKLiQccMnEpEoBRekn3Yk_vfWZzyCA",
-    "publish": "npx thirdweb@latest publish"
+    "publish": "npx thirdweb@latest publish",
+    "test": "npx hardhat test"
   },
+  
   "devDependencies": {
-    "@matterlabs/hardhat-zksync-solc": "^1.1.14",
-    "@matterlabs/hardhat-zksync-verify": "^1.7.1",
-    "hardhat": "^2.19.1"
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@thirdweb-dev/cli": "^0.14.12",
+    "hardhat": "^2.23.0"
   },
   "dependencies": {
-    "@thirdweb-dev/contracts": "^3.8.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@thirdweb-dev/contracts": "^3.15.0",
+    "@thirdweb-dev/sdk": "^4.0.99",
     "dotenv": "^16.4.7",
+    "ethers": "^6.4.0",
     "zksync-ethers": "^5.7.0"
   }
 }
