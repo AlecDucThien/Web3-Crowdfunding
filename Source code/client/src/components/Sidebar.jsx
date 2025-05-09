@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useStateContext } from '../context';
 
-import { logo, sun } from '../assets';
+import { logo, sun, moon } from '../assets';
 import { navlinks } from '../constants';
 
 const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
@@ -17,6 +18,40 @@ const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
 const Sidebar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState('dashboard');
+  const { disconnect, address } = useStateContext();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Khôi phục chế độ từ localStorage
+    const savedMode = localStorage.getItem('theme');
+    if (savedMode === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Are you sure you want to log out?');
+    if (confirmLogout) {
+      disconnect();
+      navigate('/', { replace: true })
+    }
+  };
 
   return (
     <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh]">
@@ -32,16 +67,26 @@ const Sidebar = () => {
               {...link}
               isActive={isActive}
               handleClick={() => {
-                if(!link.disabled) {
-                  setIsActive(link.name);
-                  navigate(link.link);
+                if(link.name === 'logout') {
+                  handleLogout();
+                }else{
+                  if(!link.disabled) {
+                    setIsActive(link.name);
+                    navigate(link.link);
+                  }
                 }
+                
               }}
             />
           ))}
         </div>
 
-        <Icon styles="bg-[#1c1c24] shadow-secondary" imgUrl={sun} />
+        <Icon
+          styles=" shadow-secondary"
+          imgUrl={isDarkMode ? sun : moon}
+          name="theme-toggle"
+          handleClick={toggleTheme}
+        />
       </div>
     </div>
   )

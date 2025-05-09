@@ -14,6 +14,7 @@ import loader from './loader.svg';
 import thirdweb from './thirdweb.png';
 import create from './create.svg';
 import refund from './refund.svg';
+import moon from './moon.svg';
 
 export {
   tagType,
@@ -32,4 +33,5 @@ export {
   thirdweb,
   create,
   refund,
+  moon,
 };

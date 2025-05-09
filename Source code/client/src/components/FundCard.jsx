@@ -3,7 +3,7 @@ import React from 'react';
 import { tagType, thirdweb } from '../assets';
 import { daysLeft } from '../utils';
 
-const FundCard = ({ owner, title, description, target, deadline, amountCollected, image, handleClick }) => {
+const FundCard = ({ owner, title, description, target, deadline, amountCollected, image, handleClick, status }) => {
   const remainingDays = daysLeft(deadline);
   
   return (
@@ -11,9 +11,12 @@ const FundCard = ({ owner, title, description, target, deadline, amountCollected
       <img src={image} alt="fund" className="w-full h-[158px] object-cover rounded-[15px]"/>
 
       <div className="flex flex-col p-4">
-        <div className="flex flex-row items-center mb-[18px]">
-          <img src={tagType} alt="tag" className="w-[17px] h-[17px] object-contain"/>
-          <p className="ml-[12px] mt-[2px] font-epilogue font-medium text-[12px] text-[#808191]">Education</p>
+        <div className="flex flex-row items-center justify-between mb-[18px]">
+          <div className='flex flex-row items-center'>
+            <img src={tagType} alt="tag" className="w-[17px] h-[17px] object-contain"/>
+            <p className="ml-[12px] mt-[2px] font-epilogue font-medium text-[12px] text-[#808191]">Education</p>
+          </div>
+          <p className="font-epilogue text-[14px] text-[#b2b3bd] font-semibold">{status}</p>
         </div>
 
         <div className="block">

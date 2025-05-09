@@ -1,5 +1,5 @@
 import React, { useContext, createContext } from 'react';
-import { useAddress, useContract, useConnect, metamaskWallet, useContractWrite } from '@thirdweb-dev/react';
+import { useAddress, useContract, useConnect, useDisconnect, metamaskWallet, useContractWrite } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
 
 const StateContext = createContext();
@@ -10,6 +10,7 @@ export const StateContextProvider = ({ children }) => {
 
     const address = useAddress();
     const connect = useConnect();
+    const disconnect = useDisconnect();
     const connectWithMetamask = () => connect(metamaskWallet());
 
     const publishCampaign = async (form) => {
@@ -57,16 +58,36 @@ export const StateContextProvider = ({ children }) => {
     };
 
     const getDonations = async (pId) => {
-        const donations = await contract.call('getDonators', [pId]);
-        const numberOfDonations = donations[0].length;
-        const parsedDonations = [];
-        for (let i = 0; i < numberOfDonations; i++) {
-            parsedDonations.push({
-                donator: donations[0][i],
-                donation: ethers.utils.formatEther(donations[1][i].toString())
-            });
+        try {
+          const donations = await contract.call('getDonators', [pId]);
+          const numberOfDonations = donations[0].length;
+          const aggregatedDonations = {};
+    
+          for (let i = 0; i < numberOfDonations; i++) {
+            const donator = donations[0][i];
+            const donation = ethers.utils.formatEther(donations[1][i].toString());
+            
+            if (!aggregatedDonations[donator]) {
+              aggregatedDonations[donator] = { donator, donation: 0 };
+            }
+            aggregatedDonations[donator].donation = (parseFloat(aggregatedDonations[donator].donation) + parseFloat(donation)).toString();
+          }
+    
+          return Object.values(aggregatedDonations);
+        } catch (error) {
+          console.error('Error fetching donations:', error);
+          return [];
         }
-        return parsedDonations;
+    };
+
+    const getStatus = async (pId) => {
+        const status = await contract.call('getCampaignStatus', [pId]);
+        return status;
+    };
+
+    const withdraw = async (pId) => {
+        const data = await contract.call('withdrawFunds', [pId]);
+        return data;
     };
 
     const refund = async (pId) => {
@@ -80,12 +101,15 @@ export const StateContextProvider = ({ children }) => {
                 address,
                 contract,
                 connect: connectWithMetamask,
+                disconnect,
                 createCampaign: publishCampaign,
                 getCampaigns,
                 getUserCampaigns,
                 donate,
                 getDonations,
-                refund
+                refund,
+                getStatus,
+                withdraw,
             }}
         >
             {children}

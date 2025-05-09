@@ -82,7 +82,7 @@ contract CrowdFunding is ReentrancyGuard {
     function withdrawFunds(uint256 _id) public onlyOwner(_id) validCampaign(_id) nonReentrant {
         Campaign storage campaign = campaigns[_id];
         require(block.timestamp >= campaign.deadline, "Campaign is still ongoing.");
-        require(campaign.amountCollected > 0, "No funds to withdraw.");
+        require(campaign.amountCollected >= campaign.target, "Campaign did not reach target.");
         require(address(this).balance >= campaign.amountCollected, "Insufficient contract balance.");
 
         uint256 amount = campaign.amountCollected;
