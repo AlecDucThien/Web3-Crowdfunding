@@ -2,6 +2,7 @@ import React from "react";
 import { CustomButton } from "../components";
 
 const ActionForm = ({
+  formName,
   title,
   description,
   buttonText,
@@ -17,11 +18,11 @@ const ActionForm = ({
   return (
     <div className="flex-1">
       <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-        {title}
+        {formName}
       </h4>
       <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
         <p className="font-epilogue font-medium text-[20px] leading-[30px] text-center text-[#808191]">
-          {description}
+          {title}
         </p>
         <div >
           {error && <p className="text-red-500 text-[14px] mb-4">{error}</p>}
@@ -35,27 +36,11 @@ const ActionForm = ({
               onChange={(e) => setInputValue(e.target.value)}
             />
           )}
-          {showInput && (
-            <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
-              {buttonDisabled ? (
-                <p className="font-epilogue font-normal text-[16px] leading-[26px] text-[#808191] text-center">
-                  {campaignStatus === 'Successful'
-                    ? 'The campaign has succeeded and is no longer accepting donations.'
-                    : 'The campaign has failed or expired.'}
-                </p>
-              ) : (
-                <>
-                  <h4 className="font-epilogue font-semibold text-[14px] leading-[22px] text-white">
-                    Back it because you believe in it.
-                  </h4>
-                  <p className="mt-[20px] font-epilogue font-normal leading-[22px] text-[#808191]">
-                    Support the project for no reward, just because it speaks to
-                    you.
-                  </p>
-                </>
-              )}
-            </div>
-          )}
+          <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
+              <p className="font-epilogue font-normal text-[16px] leading-[26px] text-[#808191] text-center">
+                {description}
+              </p>
+          </div>
           <CustomButton
             btnType="button"
             title={buttonText}

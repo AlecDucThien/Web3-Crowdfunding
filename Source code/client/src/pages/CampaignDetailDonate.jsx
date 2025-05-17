@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useStateContext } from '../context';
 import { CampaignDetails } from '../components';
 
 
 const CampaignDetailDonate = () => {
+  const { state } = useLocation();
   const { donate } = useStateContext();
   const handleDonate = async () => {
     setIsLoading(true);
@@ -15,15 +17,27 @@ const CampaignDetailDonate = () => {
     setIsLoading(false);
   }
 
+  const handleDescription = () => {
+    if (state.status === 'Successful') {
+      return 'You can donate to the campaign now.';
+    } else if (state.status === 'Failed') {
+      return 'The campaign has failed. You cannot donate to the campaign.';
+    } else if (state.status === 'Ongoing') {
+      return 'The campaign is still ongoing. You can donate to the campaign.';
+    }
+  } 
+
   return (
     <CampaignDetails 
       handleAction={handleDonate}
       actionFormProps={{
-        title: 'Fund',
-        description: 'Fund the campaign',
+        formName: 'Fund',
+        title: 'Fund the campaign',
+        description: handleDescription(),
         buttonText: 'Fund',
         buttonColor: 'bg-[#8c6dfd]',
         showInput: true,
+        disabled: (state.status !== 'Ongoing'),
       }}
     />
   )

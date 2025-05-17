@@ -43,6 +43,18 @@ const CampaignDetailRefund = () => {
     }
   };
 
+  const handleDescription = () => {
+    if (state.status === 'Successful') {
+      return 'The campaign was successful. You cannot refund.';
+    } else if (state.status === 'Failed') {
+      return (state.amountCollected > 0)
+        ? 'The campaign has failed. You can refund your donation.'
+        : 'You cannot refund your donation because the campaign does not have sufficient funds.';
+    } else if (state.status === 'Ongoing') {
+      return 'The campaign is still ongoing. You cannot refund yet.';
+    }
+  }
+
   return (
     <div>
       {error && (
@@ -53,11 +65,14 @@ const CampaignDetailRefund = () => {
       <CampaignDetails
         handleAction={handleRefund}
         actionFormProps={{
-          title: 'Refund',
-          description: 'Refund your donation',
-          buttonText: isLoading ? 'Processing...' : 'Refund',
+          formName: 'Refund',
+          title: 'Refund your donation',
+          description: handleDescription(),
+          buttonText: 'Refund',
           buttonColor: 'bg-[#1dc071]',
           showInput: false,
+          disabled: (state.status !== 'Failed' ? true : state.amountCollected <= 0),
+          
         }}
       />
     </div>

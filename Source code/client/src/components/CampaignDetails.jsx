@@ -114,16 +114,13 @@ const CampaignDetails = ({handleAction, actionFormProps}) => {
         </div>
 
         <ActionForm
+          formName={actionFormProps.formName}
           title={actionFormProps.title}
           description={actionFormProps.description}
           buttonText={actionFormProps.buttonText}
           buttonColor={actionFormProps?.buttonColor}
           campaignStatus={state.status}
-          buttonDisabled={
-            actionFormProps?.showInput
-              ? state.status !== 'Ongoing' || remainingDays <= 0 // Vô hiệu hóa donate nếu chiến dịch đã kết thúc
-              : state.status !== 'Successful' // Vô hiệu hóa withdraw nếu chiến dịch không thành công
-          }
+          buttonDisabled={actionFormProps?.disabled}
           handleAction={handleAction}
           error=""
           inputValue={actionFormProps?.showInput ? amount : undefined}
