@@ -10,14 +10,14 @@ import { thirdweb } from '../assets';
 const CampaignDetails = ({handleAction, actionFormProps}) => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { donate, getDonations, contract, address, getCampaigns } = useStateContext();
+  const { getDonations, contract, address, getCampaigns } = useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [amount, setAmount] = useState('');
   const [donators, setDonators] = useState([]);
   const [numberOfUserCampaigns, setNumberOfUserCampaigns] = useState(0);
 
   const remainingDays = daysLeft(state.deadline);
+
 
   const fetchDonators = async () => {
 
@@ -123,8 +123,8 @@ const CampaignDetails = ({handleAction, actionFormProps}) => {
           buttonDisabled={actionFormProps?.disabled}
           handleAction={handleAction}
           error=""
-          inputValue={actionFormProps?.showInput ? amount : undefined}
-          setInputValue={actionFormProps?.showInput ? setAmount : undefined}
+          inputValue={actionFormProps?.inputValue}
+          setInputValue={actionFormProps?.setInputValue}
           showInput={actionFormProps.showInput}
         />
       </div>

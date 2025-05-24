@@ -8,13 +8,15 @@ import { CampaignDetails } from '../components';
 const CampaignDetailDonate = () => {
   const { state } = useLocation();
   const { donate } = useStateContext();
+  const [amount, setAmount] = useState('');
+
   const handleDonate = async () => {
-    setIsLoading(true);
+    //setIsLoading(true);
 
     await donate(state.pId, amount); 
 
     navigate('/')
-    setIsLoading(false);
+    //setIsLoading(false);
   }
 
   const handleDescription = () => {
@@ -37,6 +39,8 @@ const CampaignDetailDonate = () => {
         buttonText: 'Fund',
         buttonColor: 'bg-[#8c6dfd]',
         showInput: true,
+        inputValue: amount,
+        setInputValue: setAmount,
         disabled: (state.status !== 'Ongoing'),
       }}
     />

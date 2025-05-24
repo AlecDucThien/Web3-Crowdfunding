@@ -36,7 +36,7 @@ const Profile = () => {
       title="All Campaigns"
       isLoading={isLoading}
       campaigns={campaigns}
-      purpose='dashboard'
+      purpose='donate'
     />
   )
 }
