@@ -46,6 +46,9 @@ const syncCampaigns = async ({ ethersContract, provider }) => {
 
     for (let i = 0; i < numberOfCampaigns.toNumber(); i++) {
       const campaign = await ethersContract.campaigns(i);
+      // Lấy danh sách donators và donations
+      const [donators, donations] = await ethersContract.getDonators(i);
+
       await Campaign.findOneAndUpdate(
         { id: i },
         {
@@ -57,6 +60,8 @@ const syncCampaigns = async ({ ethersContract, provider }) => {
           deadline: Number(campaign.deadline),
           amountCollected: campaign.amountCollected.toString(),
           image: campaign.image,
+          donators: donators, // Cập nhật mảng donators
+          donations: donations.map(d => d.toString()), // Chuyển đổi donations sang mảng chuỗi
         },
         { upsert: true, new: true }
       );
@@ -79,17 +84,22 @@ const listenToEvents = ({ ethersContract, provider }) => {
       return;
     }
     try {
+      // Lấy toàn bộ thông tin chiến dịch từ hợp đồng
+      const campaignData = await ethersContract.campaigns(id);
+
       await Campaign.findOneAndUpdate(
         { id: Number(id) },
         {
           id: Number(id),
-          owner,
-          title,
-          description: '',
-          target: target.toString(),
-          deadline: Number(deadline),
-          amountCollected: '0',
-          image: '',
+          owner: campaignData.owner,
+          title: campaignData.title,
+          description: campaignData.description, // Lấy từ hợp đồng
+          target: campaignData.target.toString(),
+          deadline: Number(campaignData.deadline),
+          amountCollected: campaignData.amountCollected.toString(),
+          image: campaignData.image, // Lấy từ hợp đồng
+          donators: campaignData.donators || [], // Rỗng nếu không có
+          donations: campaignData.donations.map(d => d.toString()) || [], // Chuyển sang chuỗi, rỗng nếu không có
         },
         { upsert: true, new: true }
       );
@@ -110,6 +120,11 @@ const listenToEvents = ({ ethersContract, provider }) => {
       const campaign = await Campaign.findOne({ id: Number(id) });
       if (campaign) {
         campaign.amountCollected = (BigInt(campaign.amountCollected) + BigInt(amount)).toString();
+        // Cập nhật donators và donations
+        if (!campaign.donators.includes(donator)) {
+          campaign.donators.push(donator);
+          campaign.donations.push(amount.toString());
+        }
         await campaign.save();
         console.log(`Donation for campaign ${id} saved to MongoDB`);
       } else {
@@ -152,6 +167,12 @@ const listenToEvents = ({ ethersContract, provider }) => {
       const campaign = await Campaign.findOne({ id: Number(id) });
       if (campaign) {
         campaign.amountCollected = (BigInt(campaign.amountCollected) - BigInt(amount)).toString();
+        // Xóa hoặc giảm donation tương ứng (tùy logic hợp đồng)
+        const donationIndex = campaign.donators.indexOf(donator);
+        if (donationIndex !== -1) {
+          campaign.donations.splice(donationIndex, 1);
+          campaign.donators.splice(donationIndex, 1);
+        }
         await campaign.save();
         console.log(`Funds refunded for campaign ${id} and updated in MongoDB`);
       } else {
