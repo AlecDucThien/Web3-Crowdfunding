@@ -99,7 +99,7 @@ const listenToEvents = ({ ethersContract, provider }) => {
           amountCollected: campaignData.amountCollected.toString(),
           image: campaignData.image, // Lấy từ hợp đồng
           donators: campaignData.donators || [], // Rỗng nếu không có
-          donations: campaignData.donations.map(d => d.toString()) || [], // Chuyển sang chuỗi, rỗng nếu không có
+          donations: campaignData.donations || [], // Chuyển sang chuỗi, rỗng nếu không có
         },
         { upsert: true, new: true }
       );
@@ -120,11 +120,11 @@ const listenToEvents = ({ ethersContract, provider }) => {
       const campaign = await Campaign.findOne({ id: Number(id) });
       if (campaign) {
         campaign.amountCollected = (BigInt(campaign.amountCollected) + BigInt(amount)).toString();
+        
         // Cập nhật donators và donations
-        if (!campaign.donators.includes(donator)) {
-          campaign.donators.push(donator);
-          campaign.donations.push(amount.toString());
-        }
+        campaign.donators.push(donator);
+        campaign.donations.push(amount.toString());
+        
         await campaign.save();
         console.log(`Donation for campaign ${id} saved to MongoDB`);
       } else {

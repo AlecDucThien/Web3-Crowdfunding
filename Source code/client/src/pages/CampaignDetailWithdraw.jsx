@@ -1,19 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useStateContext } from '../context';
-import { CampaignDetails } from '../components';
+import { CampaignDetails, Loader } from '../components';
 
 const CampaignDetailWithdraw = () => {
   const { state } = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { withdraw } = useStateContext();
 
+  // Redirect if state is null (direct page access)
+  if (!state) {
+    navigate('/');
+    return null;
+  }
+
   const handleWithdraw = async () => {
     try {
+      setIsLoading(true);
       await withdraw(state.pId);
-      navigate('/');
+      setIsLoading(false);
+      alert('Withdrawal successful!');
+      navigate('/withdraw');
     } catch (error) {
       console.error('Withdraw failure:', error);
+      setIsLoading(false);
+      alert('Withdrawal failed: ' + error.message);
     }
   };
 
@@ -28,18 +40,22 @@ const CampaignDetailWithdraw = () => {
   }
 
   return (
-    <CampaignDetails
-      handleAction={handleWithdraw}
-      actionFormProps={{
-        formName: 'Withdraw',
-        title: 'Withdraw the funds',
-        description: handleDescription(),
-        buttonText: 'Withdraw',
-        buttonColor: 'bg-[#1dc071]',
-        showInput: false,
-        disabled: (state.status !== 'Successful'),
-      }}
-    />
+    <div>
+      {isLoading && <Loader />}
+      <CampaignDetails
+        handleAction={handleWithdraw}
+        actionFormProps={{
+          formName: 'Withdraw',
+          title: 'Withdraw the funds',
+          description: handleDescription(),
+          buttonText: 'Withdraw',
+          buttonColor: 'bg-[#1dc071]',
+          showInput: false,
+          disabled: (state.status !== 'Successful'),
+        }}
+      />
+    </div>
+    
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useStateContext } from '../context';
-import { CampaignDetails } from '../components';
+import { CampaignDetails, Loader } from '../components';
 
 const CampaignDetailRefund = () => {
   const { state } = useLocation();
@@ -57,6 +57,7 @@ const CampaignDetailRefund = () => {
 
   return (
     <div>
+      {isLoading && <Loader />}
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
           <p>{error}</p>

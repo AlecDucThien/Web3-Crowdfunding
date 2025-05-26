@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { Loader } from '../components';
 import { useStateContext } from '../context';
 import { CampaignDetails } from '../components';
 
 
 const CampaignDetailDonate = () => {
   const { state } = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const { donate } = useStateContext();
   const [amount, setAmount] = useState('');
+  const navigate = useNavigate();
 
   const handleDonate = async () => {
-    //setIsLoading(true);
-
+    setIsLoading(true);
     await donate(state.pId, amount); 
-
-    navigate('/')
-    //setIsLoading(false);
+    setIsLoading(false);
+    alert('Donation successful!');
+    setAmount('');
+    navigate('/'); // Redirect to home after donation
   }
 
   const handleDescription = () => {
@@ -30,20 +32,24 @@ const CampaignDetailDonate = () => {
   } 
 
   return (
-    <CampaignDetails 
-      handleAction={handleDonate}
-      actionFormProps={{
-        formName: 'Fund',
-        title: 'Fund the campaign',
-        description: handleDescription(),
-        buttonText: 'Fund',
-        buttonColor: 'bg-[#8c6dfd]',
-        showInput: true,
-        inputValue: amount,
-        setInputValue: setAmount,
-        disabled: (state.status !== 'Ongoing'),
-      }}
-    />
+    <div>
+      {isLoading && <Loader />}
+      <CampaignDetails 
+        handleAction={handleDonate}
+        actionFormProps={{
+          formName: 'Fund',
+          title: 'Fund the campaign',
+          description: handleDescription(),
+          buttonText: 'Fund',
+          buttonColor: 'bg-[#8c6dfd]',
+          showInput: true,
+          inputValue: amount,
+          setInputValue: setAmount,
+          disabled: (state.status !== 'Ongoing'),
+        }}
+      />
+    </div>
+    
   )
 }
 

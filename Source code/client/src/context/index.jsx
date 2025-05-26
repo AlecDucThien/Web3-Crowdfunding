@@ -15,6 +15,12 @@ export const StateContextProvider = ({ children }) => {
 
   // State để lưu trữ danh sách chiến dịch
   const [campaigns, setCampaigns] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [createEvent, setCreateEvent] = useState(false);
+  const [donationEvent, setDonationEvent] = useState(false);
+  const [withdrawEvent, setWithdrawEvent] = useState(false);
+  const [refundEvent, setRefundEvent] = useState(false);
 
   // Lấy danh sách chiến dịch từ backend khi component mount
   useEffect(() => {
@@ -55,7 +61,7 @@ export const StateContextProvider = ({ children }) => {
         ],
       });
       console.log('Contract call success', data);
-
+      setCreateEvent(!createEvent); // Đảo ngược trạng thái để kích hoạt re-render
       // Làm mới danh sách chiến dịch từ backend sau khi tạo
       const response = await fetch('http://localhost:5000/api/campaigns');
       if (!response.ok) throw new Error('Failed to fetch campaigns');
@@ -103,6 +109,7 @@ export const StateContextProvider = ({ children }) => {
 
   const donate = async (pId, amount) => {
     const data = await contract.call('donateToCampaign', [pId], { value: ethers.utils.parseEther(amount) });
+    setDonationEvent(!donationEvent); // Đảo ngược trạng thái để kích hoạt re-render
     return data;
   };
 
@@ -125,11 +132,13 @@ export const StateContextProvider = ({ children }) => {
 
   const withdraw = async (pId) => {
     const data = await contract.call('withdrawFunds', [pId]);
+    setWithdrawEvent(!withdrawEvent); // Đảo ngược trạng thái để kích hoạt re-render
     return data;
   };
 
   const refund = async (pId) => {
     const data = await contract.call('refundDonators', [pId]);
+    setRefundEvent(!refundEvent); // Đảo ngược trạng thái để kích hoạt re-render
     return data;
   };
 
@@ -148,6 +157,12 @@ export const StateContextProvider = ({ children }) => {
         refund,
         getStatus,
         withdraw,
+        searchQuery,
+        setSearchQuery,
+        createEvent,
+        donationEvent,
+        withdrawEvent,
+        refundEvent,
       }}
     >
       {children}

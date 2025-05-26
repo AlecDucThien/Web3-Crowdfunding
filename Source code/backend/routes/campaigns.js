@@ -37,7 +37,7 @@ router.get('/:pId/donations', async (req, res) => {
       return res.status(404).json({ error: 'Campaign not found' });
     }
 
-    // Tổng hợp quyên góp theo donator, tương tự logic trong getDonations
+     // Tổng hợp quyên góp theo donator, tương tự logic trong getDonations
     const aggregatedDonations = {};
     for (let i = 0; i < campaign.donators.length; i++) {
       const donator = campaign.donators[i];

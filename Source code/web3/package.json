@@ -3,12 +3,10 @@
   "scripts": {
     "build": "npx thirdweb@latest detect",
     "deploy": "npx thirdweb@latest deploy -k 7_tV0u8o7VZW8qGML9zRzzkNo4vYlEiH3Qc3qFI347WYYtBH_9e7J5aUgKLiQccMnEpEoBRekn3Yk_vfWZzyCA",
-    "publish": "npx thirdweb@latest publish",
-    "test": "npx hardhat test"
+    "publish": "npx thirdweb@latest publish"
   },
-  
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@thirdweb-dev/cli": "^0.14.12",
     "hardhat": "^2.23.0"
   },
@@ -17,7 +15,7 @@
     "@thirdweb-dev/contracts": "^3.15.0",
     "@thirdweb-dev/sdk": "^4.0.99",
     "dotenv": "^16.4.7",
-    "ethers": "^6.4.0",
+    "ethers": "^5.7.2",
     "zksync-ethers": "^5.7.0"
   }
 }

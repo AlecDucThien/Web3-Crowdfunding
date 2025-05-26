@@ -6,8 +6,8 @@ import { useStateContext } from '../context'
 const WithDraw = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
-
-  const { address, contract, getUserCampaigns, getStatus } = useStateContext();
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  const { address, contract, getUserCampaigns, getStatus, searchQuery, createEvent, donateEvent, refundEvent, withdrawEvent } = useStateContext();
 
   const fetchCampaigns = async () => {
     setIsLoading(true);
@@ -20,6 +20,7 @@ const WithDraw = () => {
         })
       );
       setCampaigns(campaignsWithStatus);
+      setFilteredCampaigns(campaigns);
     } catch (error) {
       console.error('Error fetching campaigns or statuses:', error);
     } finally {
@@ -29,13 +30,27 @@ const WithDraw = () => {
 
   useEffect(() => {
     if(contract) fetchCampaigns();
-  }, [address, contract]);
+  }, [createEvent, donateEvent, refundEvent, withdrawEvent, address, contract]);
+
+  // Lọc chiến dịch dựa trên từ khóa tìm kiếm
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredCampaigns(campaigns); // Nếu không có từ khóa, hiển thị tất cả
+    } else {
+      const filtered = campaigns.filter(
+        (campaign) =>
+          campaign.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          campaign.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredCampaigns(filtered);
+    }
+  }, [searchQuery, campaigns]);
 
   return (
     <DisplayCampaigns 
       title="All Campaigns"
       isLoading={isLoading}
-      campaigns={campaigns}
+      campaigns={filteredCampaigns}
       purpose='withdraw'
     />
   )

@@ -7,7 +7,8 @@ const Refund = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
   const [error, setError] = useState('');
-  const { address, contract, getCampaigns, getDonations } = useStateContext();
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  const { address, contract, getCampaigns, getDonations, searchQuery, createEvent, donateEvent, refundEvent, withdrawEvent} = useStateContext();
   const navigate = useNavigate();
 
   // Fetch campaigns that the user has donated to
@@ -45,6 +46,7 @@ const Refund = () => {
 
       // Remove null entries and set campaigns
       setCampaigns(donatedCampaigns.filter((campaign) => campaign !== null));
+      setFilteredCampaigns(campaigns);
     } catch (err) {
       setError('Failed to load campaigns. Please check your connection and try again.');
       console.error('Error fetching donated campaigns:', err);
@@ -58,7 +60,21 @@ const Refund = () => {
     if (contract && address) {
       fetchDonatedCampaigns();
     }
-  }, [address, contract]);
+  }, [createEvent, donateEvent, refundEvent, withdrawEvent, address, contract]);
+
+  // Lọc chiến dịch dựa trên từ khóa tìm kiếm
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredCampaigns(campaigns); // Nếu không có từ khóa, hiển thị tất cả
+    } else {
+      const filtered = campaigns.filter(
+        (campaign) =>
+          campaign.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          campaign.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredCampaigns(filtered);
+    }
+  }, [searchQuery, campaigns]);
 
   return (
     <div>
@@ -70,7 +86,7 @@ const Refund = () => {
         <DisplayCampaigns
           title="Campaigns You Donated To"
           isLoading={isLoading}
-          campaigns={campaigns}
+          campaigns={filteredCampaigns}
           purpose="refund"
         />
     </div>

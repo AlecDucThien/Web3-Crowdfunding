@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useStateContext } from '../context';
 import { logo } from '../assets';
 import { navlinks } from '../constants';
@@ -28,13 +28,51 @@ const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
 const Sidebar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState('dashboard');
-  const { disconnect, address } = useStateContext();
+  const location = useLocation();
+  const { disconnect, address, connect } = useStateContext();
+
+  // Cập nhật isActive dựa trên đường dẫn hiện tại khi component mount hoặc route thay đổi
+  useEffect(() => {
+    const currentPath = location.pathname.split('/')[1];
+    const activeLink = navlinks.find((link) => link.link === '/' + currentPath);
+    if (activeLink) {
+      setIsActive(activeLink.name);
+    } else {
+      setIsActive('dashboard');
+    }
+  }, [location]);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm('Are you sure you want to log out?');
     if (confirmLogout) {
       disconnect();
       navigate('/', { replace: true });
+    }
+  };
+
+  const handleNavigation = (link) => {
+    if (link.name === 'dashboard') {
+      setIsActive(link.name);
+      navigate(link.link);
+    } else {
+      if (!address) {
+        const confirmConnect = window.confirm(
+          'You need to connect your wallet to access this feature. Do you want to connect now?'
+        );
+        if (confirmConnect) {
+          connect();
+        } else {
+          setIsActive('dashboard');
+          navigate('/');
+        }
+      } else {
+        if (link.name === 'logout') {
+          handleLogout();
+        } else {
+          setIsActive(link.name);
+          navigate(link.link);
+        }
+      }
     }
   };
 
@@ -53,16 +91,7 @@ const Sidebar = () => {
               key={link.name}
               {...link}
               isActive={isActive}
-              handleClick={() => {
-                if (link.name === 'logout') {
-                  handleLogout();
-                } else {
-                  if (!link.disabled) {
-                    setIsActive(link.name);
-                    navigate(link.link);
-                  }
-                }
-              }}
+              handleClick={() => handleNavigation(link)}
             />
           ))}
         </div>
