@@ -1,10 +1,11 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { Sidebar, Navbar } from './components';
 import { CampaignDetailWithdraw, CampaignDetailRefund, CreateCampaign, Home, Profile, WithDraw, ReFund, CampaignDetailDonate} from './pages';
 
 const App = () => {
+
   return (
     <div className='flex items-center bg-[#13131a] justify-center pt-4'>
       <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row max-w-[1200px] w-full">

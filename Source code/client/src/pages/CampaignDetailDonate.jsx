@@ -28,6 +28,10 @@ const CampaignDetailDonate = () => {
       return 'The campaign has failed. You cannot donate to the campaign.';
     } else if (state.status === 'Ongoing') {
       return 'The campaign is still ongoing. You can donate to the campaign.';
+    } else if (state.status === 'Withdrawn') {
+      return 'The campaign has been withdrawn. You cannot donate to the campaign.';
+    } else if (state.status === 'Refunded') {
+      return 'The campaign has been refunded. You cannot donate to the campaign.';
     }
   } 
 

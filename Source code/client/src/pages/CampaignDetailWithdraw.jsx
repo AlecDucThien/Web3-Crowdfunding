@@ -36,6 +36,10 @@ const CampaignDetailWithdraw = () => {
       return 'The campaign has failed. You cannot withdraw the funds.';
     } else if (state.status === 'Ongoing') {
       return 'The campaign is still ongoing. You cannot withdraw the funds yet.';
+    } else if (state.status === 'Withdrawn') {
+      return 'You have already withdrawn the funds.';
+    } else if (state.status === 'Refunded') {
+      return 'The campaign has been refunded. You cannot withdraw the funds.';
     }
   }
 

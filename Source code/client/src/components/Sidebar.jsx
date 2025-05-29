@@ -31,10 +31,10 @@ const Sidebar = () => {
   const location = useLocation();
   const { disconnect, address, connect } = useStateContext();
 
-  // Cập nhật isActive dựa trên đường dẫn hiện tại khi component mount hoặc route thay đổi
   useEffect(() => {
-    const currentPath = location.pathname.split('/')[1];
-    const activeLink = navlinks.find((link) => link.link === '/' + currentPath);
+    const currentPath = '/' + location.pathname.split('/')[1];
+    if (currentPath !== '/' && !address) navigate('/');
+    const activeLink = navlinks.find((link) => link.link === currentPath);
     if (activeLink) {
       setIsActive(activeLink.name);
     } else {

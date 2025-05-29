@@ -52,6 +52,10 @@ const CampaignDetailRefund = () => {
         : 'You cannot refund your donation because the campaign does not have sufficient funds.';
     } else if (state.status === 'Ongoing') {
       return 'The campaign is still ongoing. You cannot refund yet.';
+    } else if (state.status === 'Withdrawn') {
+      return 'Campaign has been withdrawn. You cannot refund your donation.';
+    } else if (state.status === 'Refunded') {
+      return 'The campaign has been refunded. You cannot refund again.';
     }
   }
 

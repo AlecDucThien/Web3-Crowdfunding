@@ -19,8 +19,8 @@ export const StateContextProvider = ({ children }) => {
 
   const [createEvent, setCreateEvent] = useState(false);
   const [donationEvent, setDonationEvent] = useState(false);
-  const [withdrawEvent, setWithdrawEvent] = useState(false);
-  const [refundEvent, setRefundEvent] = useState(false);
+  const [withdrawEvent, setWithdrawEvent] = useState([0]);
+  const [refundEvent, setRefundEvent] = useState([]);
 
   // Lấy danh sách chiến dịch từ backend khi component mount
   useEffect(() => {
@@ -127,18 +127,23 @@ export const StateContextProvider = ({ children }) => {
 
   const getStatus = async (pId) => {
     const status = await contract.call('getCampaignStatus', [pId]);
-    return status;
+    if( withdrawEvent.includes(pId) ) {
+      return 'Withdrawn'; // Trả về trạng thái "Withdrawn" nếu đã rút tiền
+    }else if( refundEvent.includes(pId) ) {
+      return 'Refunded'; // Trả về trạng thái "Refunded" nếu đã hoàn tiền
+    }
+    else return status;
   };
 
   const withdraw = async (pId) => {
     const data = await contract.call('withdrawFunds', [pId]);
-    setWithdrawEvent(!withdrawEvent); // Đảo ngược trạng thái để kích hoạt re-render
+    setWithdrawEvent([...withdrawEvent, pId]); // Thêm pId vào mảng để kích hoạt re-render
     return data;
   };
 
   const refund = async (pId) => {
     const data = await contract.call('refundDonators', [pId]);
-    setRefundEvent(!refundEvent); // Đảo ngược trạng thái để kích hoạt re-render
+    setRefundEvent([...refundEvent, pId]); // Thêm pId vào mảng để kích hoạt re-render
     return data;
   };
 

@@ -8,7 +8,7 @@ const Refund = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [error, setError] = useState('');
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
-  const { address, contract, getCampaigns, getDonations, searchQuery, createEvent, donateEvent, refundEvent, withdrawEvent} = useStateContext();
+  const { address, contract,getStatus, getCampaigns, getDonations, searchQuery, createEvent, donateEvent, refundEvent, withdrawEvent} = useStateContext();
   const navigate = useNavigate();
 
   // Fetch campaigns that the user has donated to
@@ -30,7 +30,7 @@ const Refund = () => {
             const userDonation = donations.find((d) => d.donator.toLowerCase() === address.toLowerCase());
             if (!userDonation) return null;
 
-            const status = await contract.call('getCampaignStatus', [campaign.pId]);
+            const status = await getStatus(campaign.pId);
             return {
               ...campaign,
               status,

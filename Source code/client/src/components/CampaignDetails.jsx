@@ -9,15 +9,16 @@ import { thirdweb } from '../assets';
 
 const CampaignDetails = ({handleAction, actionFormProps}) => {
   const { state } = useLocation();
+
   const navigate = useNavigate();
-  const { getDonations, contract, address, getCampaigns } = useStateContext();
+  const { getDonations, contract, address, getCampaigns, withdrawEvent } = useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const [donators, setDonators] = useState([]);
+  const [status, setStatus] = useState(state.status);
   const [numberOfUserCampaigns, setNumberOfUserCampaigns] = useState(0);
 
   const remainingDays = daysLeft(state.deadline);
-
 
   const fetchDonators = async () => {
 
@@ -46,6 +47,10 @@ const CampaignDetails = ({handleAction, actionFormProps}) => {
         return '#d9534f'; // Đỏ
       case 'Ongoing':
         return '#f0ad4e'; // Vàng
+      case 'Withdrawn':
+        return '#5bc0de'; // Xanh dương
+      case 'Refunded':
+        return '#d9534f'; // Đỏ
       default:
         return '#1c1c24'; // Mặc định (xám)
     }
