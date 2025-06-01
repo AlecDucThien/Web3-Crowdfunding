@@ -1,9 +1,11 @@
+// Nhập các thư viện và module cần thiết
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useStateContext } from '../context';
 import { logo } from '../assets';
 import { navlinks } from '../constants';
 
+// Component Icon hiển thị một biểu tượng điều hướng
 const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
   <div
     className={`w-[48px] h-[48px] rounded-[10px] ${
@@ -25,12 +27,17 @@ const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
   </div>
 );
 
+// Component Sidebar hiển thị thanh điều hướng bên
 const Sidebar = () => {
   const navigate = useNavigate();
+  // State để theo dõi mục điều hướng đang hoạt động
   const [isActive, setIsActive] = useState('dashboard');
+  // Theo dõi đường dẫn hiện tại
   const location = useLocation();
+  // Lấy các hàm và state từ StateContext
   const { disconnect, address, connect } = useStateContext();
 
+  // useEffect để cập nhật mục điều hướng đang hoạt động khi đường dẫn thay đổi
   useEffect(() => {
     const currentPath = '/' + location.pathname.split('/')[1];
     if (currentPath !== '/' && !address) navigate('/');
@@ -42,6 +49,7 @@ const Sidebar = () => {
     }
   }, [location]);
 
+  // Hàm xử lý đăng xuất
   const handleLogout = () => {
     const confirmLogout = window.confirm('Are you sure you want to log out?');
     if (confirmLogout) {
@@ -50,6 +58,7 @@ const Sidebar = () => {
     }
   };
 
+  // Hàm xử lý điều hướng khi click vào biểu tượng
   const handleNavigation = (link) => {
     if (link.name === 'dashboard') {
       setIsActive(link.name);
@@ -77,13 +86,14 @@ const Sidebar = () => {
   };
 
   return (
+    // Thẻ div chính chứa thanh điều hướng bên
     <div className="flex flex-col items-center sticky top-5 h-[93vh] w-[76px]">
       {/* Logo */}
       <Link to="/">
         <Icon styles="w-[52px] h-[52px] bg-[#2c2f32]" imgUrl={logo} />
       </Link>
 
-      {/* Navigation Links */}
+      {/* Các liên kết điều hướng */}
       <div className="flex-1 flex flex-col justify-start items-center bg-[#1c1c24] rounded-[20px] w-[76px] py-4 mt-12">
         <div className="flex flex-col h-full justify-between items-center gap-3">
           {navlinks.map((link) => (
@@ -100,4 +110,5 @@ const Sidebar = () => {
   );
 };
 
+// Xuất component Sidebar để sử dụng trong các file khác
 export default Sidebar;

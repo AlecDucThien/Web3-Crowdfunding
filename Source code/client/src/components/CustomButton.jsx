@@ -1,7 +1,10 @@
+// Nhập thư viện React
 import React from 'react'
 
+// Component CustomButton hiển thị một nút tùy chỉnh
 const CustomButton = ({ btnType, title, handleClick, styles, disabled }) => {
   return (
+    // Thẻ button với các thuộc tính tùy chỉnh
     <button
       type={btnType}
       disabled={disabled}
@@ -15,4 +18,5 @@ const CustomButton = ({ btnType, title, handleClick, styles, disabled }) => {
   )
 }
 
+// Xuất component CustomButton để sử dụng trong các file khác
 export default CustomButton
