@@ -101,7 +101,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns, purpose }) => {
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
           >
-            Trước
+            Previous
           </button>
           <span className="font-epilogue text-[14px] text-white">
             Trang {currentPage} / {totalPages}
@@ -115,7 +115,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns, purpose }) => {
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
           >
-            Tiếp
+            Next
           </button>
         </div>
       )}

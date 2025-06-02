@@ -32,6 +32,7 @@ const Home = () => {
   // Gọi fetchCampaigns khi contract hoặc các sự kiện thay đổi
   useEffect(() => {
     if (contract) fetchCampaigns();
+    console.log('Contract or events changed, fetching campaigns...');
   }, [createEvent, donateEvent, refundEvent, withdrawEvent, address, contract]);
 
   // Lọc chiến dịch dựa trên từ khóa tìm kiếm
